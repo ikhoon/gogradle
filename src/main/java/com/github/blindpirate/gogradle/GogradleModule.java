@@ -84,7 +84,7 @@ import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matchers;
 import com.google.inject.spi.InjectionPoint;
 import org.gradle.api.Project;
-import org.gradle.api.internal.project.DefaultProject;
+import org.gradle.api.internal.project.ProjectInternal;
 import org.gradle.internal.service.ServiceRegistry;
 
 import javax.inject.Inject;
@@ -110,12 +110,21 @@ public class GogradleModule extends AbstractModule {
 
     public GogradleModule(Project project) {
         this.project = project;
-        this.serviceRegistry = DefaultProject.class.cast(project).getServices();
+        if (project instanceof ProjectInternal) {
+            this.serviceRegistry = ((ProjectInternal) project).getServices();
+        } else {
+            this.serviceRegistry = null;
+        }
     }
 
     @Override
     protected void configure() {
-        bind(Project.class).toInstance(project);
+        // I don't know why but Guava seems to bind 'project' to `DefaultProject.class` which causes the
+        // following error.
+        // 1) [Guice/InjectAbstractMethod]: Injected method DefaultProject.getBuildscript() cannot be abstract.
+        // Use `Provider` to hide the actual class information when binding the dependency.
+        bind(Project.class).toProvider(() -> project);
+
         bind(ServiceRegistry.class).toInstance(serviceRegistry);
 
         bind(NotationParser.class).to(DefaultNotationParser.class);

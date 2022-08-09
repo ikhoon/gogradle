@@ -1,5 +1,6 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.github.blindpirate.gogradle.TestTop1000Task
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
 
 /************** plugins **************/
 plugins {
@@ -10,19 +11,21 @@ plugins {
     id 'jacoco'
     id 'antlr'
     id 'codenarc'
-    id 'com.github.kt3k.coveralls' version '2.7.1'
-    id 'com.github.johnrengelman.shadow' version '4.0.3'
-    id "com.gradle.plugin-publish" version "0.9.9"
+    id 'maven-publish'
+    id 'com.github.kt3k.coveralls' version '2.12.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id "com.gradle.plugin-publish" version "1.0.0"
     id "co.riiid.gradle" version "0.4.2"
-    id "org.jetbrains.kotlin.jvm" version "1.3.72"
-    id "com.github.spotbugs" version "4.0.5"
+    id "org.jetbrains.kotlin.jvm" version "1.7.10"
+    id "com.github.spotbugs" version "5.0.9"
+    id "com.github.ben-manes.versions" version "0.42.0"
 }
 
 println System.getenv("PATH")
 apply from: 'config/scripts/coverage.gradle'
 
-group 'com.github.blindpirate'
-version '0.11.4'
+group 'kr.ikhoon'
+version '0.12.0-RC1'
 sourceCompatibility = '1.8'
 targetCompatibility = '1.8'
 
@@ -52,66 +55,66 @@ sourceSets {
 repositories {
     mavenLocal()
     jcenter()
+    mavenCentral()
 }
 dependencies {
-    integrationTestCompile sourceSets.main.output
-    integrationTestCompile sourceSets.test.output
-    integrationTestCompile configurations.testCompile
-    integrationTestRuntime configurations.testRuntime
+    integrationTestImplementation sourceSets.main.output
+    integrationTestImplementation sourceSets.test.output
+    integrationTestImplementation configurations.testImplementation
+    integrationTestRuntimeOnly configurations.testRuntimeOnly
 
-    crossVersionTestCompile sourceSets.main.output
-    crossVersionTestCompile sourceSets.test.output
-    crossVersionTestCompile sourceSets.integrationTest.output
-    crossVersionTestCompile configurations.testCompile
+    crossVersionTestImplementation sourceSets.main.output
+    crossVersionTestImplementation sourceSets.test.output
+    crossVersionTestImplementation sourceSets.integrationTest.output
+    crossVersionTestImplementation configurations.testImplementation
 
-    antlr "org.antlr:antlr4:4.6"
+    antlr 'org.antlr:antlr4:4.10.1'
 
-    compile gradleApi()
-    compile "org.antlr:antlr4:4.6"
-    compile group: 'com.google.inject', name: 'guice', version: '4.1.0'
-    compile group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
-    compile group: 'org.apache.commons', name: 'commons-collections4', version: '4.1'
-    compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
-    compile group: 'commons-io', name: 'commons-io', version: '2.5'
-    compile 'com.google.guava:guava:20.0'
-    compile 'com.github.zafarkhaja:java-semver:0.9.0'
-    compile group: 'org.jsoup', name: 'jsoup', version: '1.7.2'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.8.5'
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.8.5'
-    compile 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.8.5'
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.8.5'
-    compile group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'
-    compile group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
-    compile group: 'org.apache.ant', name: 'ant', version: '1.10.0'
-    compile group: 'com.typesafe.sbt', name: 'sbt-interface', version: '0.13.13'
-    compile group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.6.3'
-    compile group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.4.1'
-    compile group: 'org.jooq', name: 'joor', version: '0.9.6'
-    compile 'com.moandjiezana.toml:toml4j:0.7.2'
+    implementation "org.antlr:antlr4:4.10.1"
+    shadow group: 'com.google.inject', name: 'guice', version: '5.1.0'
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.5'
+    implementation group: 'org.apache.commons', name: 'commons-collections4', version: '4.3'
+    implementation group: 'commons-codec', name: 'commons-codec', version: '1.13'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.7'
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'com.github.zafarkhaja:java-semver:0.9.0'
+    implementation group: 'org.jsoup', name: 'jsoup', version: '1.14.2'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.13.3'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.13.3'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.3'
+    implementation group: 'com.google.code.findbugs', name: 'annotations', version: '3.0.1'
+    implementation group: 'net.lingala.zip4j', name: 'zip4j', version: '1.3.2'
+    implementation group: 'org.apache.ant', name: 'ant', version: '1.10.11'
+    implementation group: 'com.typesafe.sbt', name: 'sbt-interface', version: '0.13.15'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-xml', version: '2.13.3'
+    implementation group: 'org.codehaus.woodstox', name: 'woodstox-core-asl', version: '4.4.1'
+    implementation group: 'org.jooq', name: 'joor', version: '0.9.6'
+    implementation 'com.moandjiezana.toml:toml4j:0.7.2'
 
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.16.1'
-    testCompile group: 'org.mockito', name: 'mockito-core', version: '2.23.0'
-    testCompile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '4.5.3.201708160445-r'
-    testCompile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.2.v20170220'
-    testCompile group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.2.v20170220'
-    testCompile group: 'org.eclipse.jgit', name: 'org.eclipse.jgit.http.server', version: '4.5.3.201708160445-r'
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+    testImplementation group: 'com.github.stefanbirkner', name: 'system-rules', version: '1.19.0'
+    testImplementation group: 'org.mockito', name: 'mockito-core', version: '2.23.0'
+    testImplementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit', version: '5.13.0.202109080827-r'
+    testImplementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.4.46.v20220331'
+    testImplementation group: 'org.eclipse.jetty', name: 'jetty-servlet', version: '9.4.46.v20220331'
+    testImplementation group: 'org.eclipse.jgit', name: 'org.eclipse.jgit.http.server', version: '4.5.3.201708160445-r'
 
-    integrationTestCompile 'com.github.tomakehurst:wiremock:2.19.0'
-    integrationTestCompile 'org.apache.commons:commons-exec:1.3'
+    integrationTestImplementation 'com.github.tomakehurst:wiremock:2.19.0'
+    integrationTestImplementation 'org.apache.commons:commons-exec:1.3'
 
-    crossVersionTestCompile 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    crossVersionTestCompile 'org.jetbrains.kotlin:kotlin-test-junit'
-    crossVersionTestCompile 'org.jetbrains.kotlin:kotlin-test'
-    crossVersionTestCompile 'org.jetbrains.kotlin:kotlin-reflect'
-    crossVersionTestCompile gradleTestKit()
+    crossVersionTestImplementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    crossVersionTestImplementation 'org.jetbrains.kotlin:kotlin-test-junit'
+    crossVersionTestImplementation 'org.jetbrains.kotlin:kotlin-test'
+    crossVersionTestImplementation 'org.jetbrains.kotlin:kotlin-reflect'
+    crossVersionTestImplementation gradleTestKit()
 }
 /************** test **************/
 // Define integration test task
 createIntegrationTest('integrationTest', 'integrationTest')
 
 List<String> gradleVersionsToBeTested = JavaVersion.current().isJava9Compatible()
-        ? ["4.8.1", "4.9", "4.10.3", "5.0"]
+        ? ["4.8.1", "4.9", "4.10.3", "5.0", "7.5"]
         : ["3.5.1", "4.0.1", "4.1", "4.2.1", "4.3.1", "4.4.1", "4.5.1", "4.6", "4.7", "4.8.1", "4.9", "4.10.3", "5.0"]
 
 gradleVersionsToBeTested.each {
@@ -122,7 +125,7 @@ gradleVersionsToBeTested.each {
 
 def createIntegrationTest(String taskName, String sourceSet) {
     project.tasks.create(name: taskName, type: Test) {
-        if (gradle.gradleVersion.startsWith('4.') || gradle.gradleVersion.startsWith("5.") || gradle.gradleVersion.startsWith("6.")) {
+        if (gradle.gradleVersion.startsWith('4.') || gradle.gradleVersion.startsWith("5.") || gradle.gradleVersion.startsWith("6.") || gradle.gradleVersion.startsWith("7.")) {
             testClassesDirs = sourceSets[sourceSet].output.classesDirs
         } else {
             testClassesDir = sourceSets[sourceSet].output.classesDir
@@ -176,9 +179,6 @@ javadoc {
 
 /************** coverage **************/
 
-jacoco {
-    toolVersion = "0.8.5"
-}
 jacocoTestReport {
     reports {
         xml.enabled = true // coveralls plugin depends on xml format report
@@ -228,14 +228,18 @@ task('updateVersion') {
 }
 
 pluginBundle {
+    website = 'https://github.com/ikhoon/gogradle'
+    vcsUrl = 'https://github.com/ikhoon/gogradle'
+    tags = ['go', 'golang', 'build', 'test', 'gradle7']
+}
+
+gradlePlugin {
     plugins {
         golangPlugin {
-            website = 'https://github.com/blindpirate/gogradle'
-            vcsUrl = 'https://github.com/blindpirate/gogradle'
-            description = 'Full-featured Build Support for Golang'
-            tags = ['go', 'golang', 'build', 'test']
-            id = 'com.github.blindpirate.gogradle'
+            id = 'kr.ikhoon.gogradle'
             displayName = 'Gogradle - Full-featured Build Plugin for Golang'
+            description = 'A fork of Gogradle to make compatible with Gradle 7'
+            implementationClass = 'com.github.blindpirate.gogradle.GolangPlugin'
         }
     }
 }
@@ -252,13 +256,18 @@ tasks.withType(KotlinCompile) {
 }
 
 /************** shadow **************/
-
 shadowJar {
+    classifier = ''
     dependencies {
-        exclude 'org/gradle/**', 'groovy/**', 'org/codehaus/groovy/**', 'META-INF/services/org.codehaus.groovy*'
+        exclude(dependency('com.google.inject:guice'))
     }
-    archiveClassifier = 'all'
 }
+task relocateShadowJar(type: ConfigureShadowRelocation) {
+    target = tasks.shadowJar
+}
+
+tasks.shadowJar.dependsOn tasks.relocateShadowJar
+
 
 /************ spotbugs ****************/
 spotbugs {
@@ -277,4 +286,14 @@ spotbugsMain {
 
 codenarcTest {
     exclude "**/DependencyTreeNodeTest.groovy"
+}
+
+// Configure the default DuplicatesStrategy for com.github.blindpirate.gogradle.properties
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+afterEvaluate {
+    tasks.sourcesJar.duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    tasks.sourcesJar.dependsOn 'generateGrammarSource'
 }

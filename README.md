@@ -1,4 +1,6 @@
-# Gogradle - a Full-featured Build Tool for Golang
+# A fork of Gogradle - a Full-featured Build Tool for Golang
+
+This project forked the upstream project to support Gradle 7 and later versions.
 
 <img align="right" src="https://raw.githubusercontent.com/blindpirate/gogradle/master/docs/images/go-mini.png">
 

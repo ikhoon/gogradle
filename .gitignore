@@ -24,3 +24,5 @@ gradle-app.setting
 
 # ANTLR tokens
 *.tokens
+
+.tool-versions

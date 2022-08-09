@@ -17,11 +17,7 @@
 
 package com.github.blindpirate.gogradle.task.go;
 
-import com.github.blindpirate.gogradle.util.StringUtils;
-import org.gradle.api.Action;
-import org.gradle.api.internal.tasks.testing.junit.result.TestClassResult;
-import org.gradle.api.internal.tasks.testing.junit.result.TestResultsProvider;
-import org.gradle.api.tasks.testing.TestOutputEvent;
+import static com.github.blindpirate.gogradle.task.go.test.PlainGoTestResultExtractor.GoTestMethodResult;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -32,7 +28,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static com.github.blindpirate.gogradle.task.go.test.PlainGoTestResultExtractor.GoTestMethodResult;
+import org.gradle.api.Action;
+import org.gradle.api.internal.tasks.testing.junit.result.TestClassResult;
+import org.gradle.api.internal.tasks.testing.junit.result.TestResultsProvider;
+import org.gradle.api.tasks.testing.TestOutputEvent;
+
+import com.github.blindpirate.gogradle.util.StringUtils;
 
 public class GoTestResultsProvider implements TestResultsProvider {
     private List<TestClassResult> testClassResults = new ArrayList<>();
@@ -81,9 +82,14 @@ public class GoTestResultsProvider implements TestResultsProvider {
         }
         TestClassResult result = idToClassResultMap.get(id);
         return result.getResults().stream()
-                .map(methodResult -> (GoTestMethodResult) methodResult)
-                .map(GoTestMethodResult::getMessage)
-                .anyMatch(StringUtils::isNotEmpty);
+                     .map(methodResult -> (GoTestMethodResult) methodResult)
+                     .map(GoTestMethodResult::getMessage)
+                     .anyMatch(StringUtils::isNotEmpty);
+    }
+
+    @Override
+    public boolean hasOutput(long classId, long testId, TestOutputEvent.Destination destination) {
+        return false;
     }
 
     @Override

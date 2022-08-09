@@ -1,4 +1,4 @@
-// Generated from GolangBuildInfo.g4 by ANTLR 4.6
+// Generated from GolangBuildInfo.g4 by ANTLR 4.10.1
 package com.github.blindpirate.gogradle.antlr;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
